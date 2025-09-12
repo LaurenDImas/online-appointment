@@ -6,6 +6,7 @@ use App\Models\Otp;
 use App\Models\ServiceType;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class AuthenticationService{
     public function registerUser(array $payload): void
@@ -40,14 +41,14 @@ class AuthenticationService{
         $user->otps()->create([
             'type' => 'registration',
             'otp' => $otp,
-            'expires_at' => now()->addDay(),
+            'expired_at' => now()->addDay(),
             'is_active' => true,
         ]);
 
-        \Mail::to($user->email)->send(new \App\Mail\SendRegisterOTP($user, $otp));
+        Mail::to($user->email)->send(new \App\Mail\SendRegisterOTP($user, $otp));
     }
 
-    public function sendOtp(User $user): void
+    public function resendOtp(User $user): void
     {
         do {
             $otp = rand(100000, 999999);
@@ -61,10 +62,71 @@ class AuthenticationService{
         $user->otps()->create([
             'type' => 'registration',
             'otp' => $otp,
-            'expires_at' => now()->addDay(),
+            'expired_at' => now()->addDay(),
             'is_active' => true,
         ]);
 
-        \Mail::to($user->email)->send(new \App\Mail\SendRegisterOTP($user));
+        Mail::to($user->email)->send(new \App\Mail\SendRegisterOTP($user, $otp));
+    }
+
+    public function verifyOtp(string $email, string $otp): bool
+    {
+        $user = User::whereNull('email_verified_at')->where("email", $email)->first();
+
+        if (is_null($user)) {
+            return false;
+        }
+
+        $otpCheck = $user->otps()->where('type', 'registration')
+            ->where('otp', $otp)
+            ->where('is_active', true)
+            ->where('expired_at', '>=', now())
+            ->first();
+
+        if (is_null($otpCheck)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function verifyRegister(string $email, string $otp): bool|string
+    {
+        $user = User::whereNull('email_verified_at')->where("email", $email)->first();
+        if (is_null($user)) {
+            return false;
+        }
+
+        $otpCheck = $user->otps()->where('type', 'registration')
+            ->where('otp', $otp)
+            ->where('is_active', true)
+            ->where('expired_at', '>=', now())
+            ->first();
+
+        if (is_null($otpCheck)) {
+            return false;
+        }
+
+        $otpCheck->delete();
+
+        $user->update([
+            'email_verified_at' => now(),
+        ]);
+
+        return $user->createToken(config('app.name'))->plainTextToken;
+    }
+
+    public function login(string $email, string $password): bool|string
+    {
+        $user = User::where('email', $email)->whereNotNull('email_verified_at')->first();
+        if (is_null($user)) {
+            return false;
+        }
+
+        if(!Hash::check($password, $user->password)){
+            return false;
+        }
+
+        return $user->createToken(config('app.name'))->plainTextToken;
     }
 }

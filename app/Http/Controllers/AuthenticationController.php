@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Helpers;
 use App\Services\AuthenticationService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class AuthenticationController extends Controller
 {
@@ -19,12 +20,12 @@ class AuthenticationController extends Controller
     }
     public function register()
     {
-        $validator = \Validator::make(request()->all(), [
+        $validator = Validator::make(request()->all(), [
             'name' => 'required|min:5|max:100',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:3|confirmed',
-            'username' => 'required|min:5|max:100|unique:users,username',
-            'service_type' => 'required|exists:service_types,id',
+            'username' => 'required|min:5|max:100|unique:host_details,username',
+            'service_type' => 'required|exists:service_types,uuid',
             'meet_location' => 'required|max:100',
             'meet_timezone' => 'required|max:2',
         ]);
@@ -42,25 +43,31 @@ class AuthenticationController extends Controller
         ]);
     }
 
-    public function resendOtp()
+    public function resendOtp(): \Illuminate\Http\JsonResponse
     {
-        $validator = \Validator::make(request()->all(), [
+        $validator = Validator::make(request()->all(), [
             'email' => 'required|email|exists:users,email',
         ]);
 
         if ($validator->fails()) {
-            return ResponseFormatter::error(400, $validator->errors());
+            return ResponseFormatter::error(HttpCode::BAD_REQUEST, $validator->errors());
         }
 
-        $user = User::where('email', request()->email)->whereNotNull('email_verified_at')->first();
+        $user = User::where('email', request()->email)->whereNull('email_verified_at')->first();
 
         if (is_null($user)) {
-            return ResponseFormatter::error(400, null, [
-                'User tidak ditemukan / atau sudah terverifikasi!'
+            return ResponseFormatter::error(HttpCode::NOT_FOUND, null, [
+                'User tidak ditemukan!'
             ]);
         }
 
-        $this->authenticationService->sendOtp($user);
+        if (!is_null($user->email_verified_at)) {
+            return ResponseFormatter::error(HttpCode::CONFLICT, null, [
+                'User sudah terverifikasi!'
+            ]);
+        }
+
+        $this->authenticationService->resendOtp($user);
 
 
         return ResponseFormatter::success([
@@ -68,86 +75,62 @@ class AuthenticationController extends Controller
         ]);
     }
 
-    public function verifyOtp()
+    public function verifyOtp(): \Illuminate\Http\JsonResponse
     {
-        $validator = \Validator::make(request()->all(), [
+        $validator = Validator::make(request()->all(), [
             'email' => 'required|email|exists:users,email',
-            'otp' => 'required|exists:users,otp_register',
         ]);
 
         if ($validator->fails()) {
-            return ResponseFormatter::error(400, $validator->errors());
+            return ResponseFormatter::error(HttpCode::BAD_REQUEST, $validator->errors());
         }
 
-        $user = User::where('email', request()->email)->where('otp_register', request()->otp)->count();
-        if ($user > 0) {
+        if($this->authenticationService->verifyOtp(request()->email, request()->otp)) {
             return ResponseFormatter::success([
                 'is_correct' => true
             ]);
-        }
+        };
 
-        return ResponseFormatter::error(400, 'Invalid OTP');
+        return ResponseFormatter::error(HttpCode::BAD_REQUEST, null, ['invalid otp']);
     }
 
-    public function verifyRegister()
+    public function verifyRegister(): \Illuminate\Http\JsonResponse
     {
-        $validator = \Validator::make(request()->all(), [
+        $validator = Validator::make(request()->all(), [
             'email' => 'required|email|exists:users,email',
-            'otp' => 'required|exists:users,otp_register',
-            'password' => 'required|min:6|confirmed'
         ]);
 
         if ($validator->fails()) {
-            return ResponseFormatter::error(400, $validator->errors());
+            return ResponseFormatter::error(HttpCode::BAD_REQUEST, $validator->errors());
         }
 
-        $user = User::where('email', request()->email)->where('otp_register', request()->otp)->first();
-        if (!is_null($user)) {
-            $user->update([
-                'otp_register' => null,
-                'email_verified_at' => now(),
-                'password' => bcrypt(request()->password)
-            ]);
-
-            $token = $user->createToken(config('app.name'))->plainTextToken;
-
+        if($token = $this->authenticationService->verifyRegister(request()->email, request()->otp)) {
             return ResponseFormatter::success([
                 'token' => $token
             ]);
-        }
+        };
 
-        return ResponseFormatter::error(400, 'Invalid OTP');
+        return ResponseFormatter::error(HttpCode::BAD_REQUEST, null, ['invalid otp']);
     }
 
-    public function login()
+    public function login(): \Illuminate\Http\JsonResponse
     {
-        $validator = \Validator::make(request()->all(), [
-            'phone_email' => 'required',
-            'password' => 'required'
-        ]);
-
-        if ($validator->fails()) {
-            return ResponseFormatter::error(400, $validator->errors());
-        }
-
-        $user = User::where('email', request()->phone_email)->orWhere('phone', request()->phone_email)->first();
-        if (is_null($user)) {
-            return ResponseFormatter::error(400, null, [
-                'User tidak ditemukan'
-            ]);
-        }
-
-        $userPassword = $user->password;
-        if (\Hash::check(request()->password, $userPassword)) {
-            $token = $user->createToken(config('app.name'))->plainTextToken;
-
+        if($token = $this->authenticationService->login(request()->email, request()->password)) {
             return ResponseFormatter::success([
                 'token' => $token
             ]);
-        }
+        };
 
-        return ResponseFormatter::error(400, null, [
-            'Password salah!'
+        return ResponseFormatter::error(HttpCode::BAD_REQUEST, null, [
+            'Email atau Password salah!'
+        ]);
+    }
+
+    public function logout(): \Illuminate\Http\JsonResponse
+    {
+        auth("sanctum")->user()->tokens()->delete();
+        return ResponseFormatter::success([
+            'logout_success' => true
         ]);
     }
 }

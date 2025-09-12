@@ -16,7 +16,7 @@ return new class extends Migration
             $table->morphs('otpable');
             $table->string('type'); // registration, forgot_password, appointment
             $table->string('otp');
-            $table->time('expires_at');
+            $table->dateTime('expired_at');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

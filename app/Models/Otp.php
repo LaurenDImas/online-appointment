@@ -11,7 +11,7 @@ class Otp extends Model
         'otpable_id',
         'type', // registration, forgot_password, appointment
         'otp',
-        'expires_at',
+        'expired_at',
         'is_active',
     ];
 }
