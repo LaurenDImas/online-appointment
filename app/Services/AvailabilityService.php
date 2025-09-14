@@ -9,11 +9,9 @@ class AvailabilityService
     {
         $checkQuery = $host->availabilities()->where('day', $day)
             ->where(function ($subQuery) use ($timeStart, $timeEnd) {
-                $subQuery->whereBetween('time_start', [$timeStart, $timeEnd])
-                        ->orWhereBetween('time_end', [$timeStart, $timeEnd])
-                        ->orWhere(function ($subSubQuery) use ($timeStart, $timeEnd) {
-                            $subSubQuery->where('time_start', '<=', $timeStart)
-                                ->where('time_end', '>=', $timeEnd);
+                $subQuery->where(function ($subSubQuery) use ($timeStart, $timeEnd) {
+                            $subSubQuery->where('time_start', '<=', $timeEnd)
+                                ->where('time_end', '>=', $timeStart);
                         });
             });
 

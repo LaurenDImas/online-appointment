@@ -16,6 +16,9 @@ class ProfileResource extends JsonResource
     {
         return [
             'uuid' => $this->uuid,
+            'calendar_url' => route('icalendar', [
+               $this->uuid
+            ]),
             'name' => $this->name,
             'email' => $this->email,
             'status' => $this->hostDetail->status,

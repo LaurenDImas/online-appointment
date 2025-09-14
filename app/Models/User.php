@@ -6,6 +6,7 @@ namespace App\Models;
 use App\Models\Appointment\Appointment;
 use App\Models\Host\Availability;
 use App\Models\Host\HostDetail;
+use App\Models\Host\Leave;
 use App\Models\Host\Prequestion;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -72,5 +73,10 @@ class User extends Authenticatable
 
     public function prequestions(){
         return $this->hasMany(PreQuestion::class, 'host_id');
+    }
+
+    public function leaves()
+    {
+        return $this->hasMany(Leave::class, 'host_id');
     }
 }

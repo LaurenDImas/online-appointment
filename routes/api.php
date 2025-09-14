@@ -3,10 +3,12 @@
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\AvailabilityController;
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\PreQuestionController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AppointmentController;
 
 Route::prefix('v1')->group(function () {
     Route::post('register', [AuthenticationController::class, 'register']);
@@ -34,5 +36,15 @@ Route::prefix('v1')->group(function () {
 
         Route::get('prequestions', [PreQuestionController::class, 'index']);
         Route::post('prequestions', [PreQuestionController::class, 'upsert']);
+
+        Route::get('availabilities', [AvailabilityController::class, 'index']);
+        Route::post('availabilities', [AvailabilityController::class, 'upsert']);
+
+        Route::get('leaves', [LeaveController::class, 'index']);
+        Route::post('leaves', [LeaveController::class, 'upsert']);
+
+        Route::get('appointments', [AppointmentController::class, 'index']);
+        Route::get('appointments/{appointment:uuid}', [AppointmentController::class, 'show']);
+        Route::post('appointments/{appointment:uuid}/{status}', [AppointmentController::class, 'updateStatus']);
     });
 });
