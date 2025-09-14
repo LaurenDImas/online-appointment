@@ -2,6 +2,7 @@
 
 namespace App\Models\Host;
 
+use App\Models\ServiceType;
 use Illuminate\Database\Eloquent\Model;
 
 class HostDetail extends Model
@@ -18,4 +19,8 @@ class HostDetail extends Model
         'is_public',
         'is_auto_approve',
     ];
+
+    public function serviceType(){
+        return $this->belongsTo(ServiceType::class);
+    }
 }
