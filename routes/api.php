@@ -9,6 +9,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\Public\ExploreController;
+use App\Http\Controllers\Public\BookController;
 
 Route::prefix('v1')->group(function () {
     Route::post('register', [AuthenticationController::class, 'register']);
@@ -22,6 +24,17 @@ Route::prefix('v1')->group(function () {
         Route::post('resend-otp', [ForgotPasswordController::class, 'resendOtp']);
         Route::post('check-otp', [ForgotPasswordController::class, 'verifyOtp']);
         Route::post('reset-password', [ForgotPasswordController::class, 'resetPassword']);
+    });
+
+    Route::prefix('public')->group(function () {
+        Route::get('service-type', [ExploreController::class, 'gerServiceType']);
+        Route::get('explore', [ExploreController::class, 'exploreHost']);
+        Route::get('explore/{user:uuid}', [ExploreController::class, 'detailHost']);
+
+        Route::post('explore/{user:uuid}/book', [BookController::class, 'book']);
+        Route::get('appointment/{appointment:uuid}', [BookController::class, 'detailAppointment']);
+
+        Route::post('appointment/{appointment:uuid}/cancel', [BookController::class, 'cancelAppointment'])->name('appointment.cancel');
     });
 
     Route::middleware('auth.sanctum.custom')->group(function () {

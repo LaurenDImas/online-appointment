@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProfileResource extends JsonResource
+class PublicHostExcerptResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,11 +16,7 @@ class ProfileResource extends JsonResource
     {
         return [
             'uuid' => $this->uuid,
-            'calendar_url' => route('icalendar', [
-               $this->uuid
-            ]),
             'name' => $this->name,
-            'email' => $this->email,
             'status' => $this->hostDetail->status,
             'username' => $this->hostDetail->username,
             'service_type' => $this->hostDetail->serviceType->only([
@@ -31,8 +27,6 @@ class ProfileResource extends JsonResource
             'is_available' => (boolean) $this->hostDetail->is_available,
             'meet_location' => $this->hostDetail->meet_location,
             'meet_timezone' => $this->hostDetail->meet_timezone,
-            'is_public' => (boolean) $this->hostDetail->is_public,
-            'is_auto_approve' => (boolean) $this->hostDetail->is_auto_approve,
         ];
     }
 }

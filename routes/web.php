@@ -10,3 +10,6 @@ Route::get('/', function () {
 
 Route::get('/calendar/apps/{user:uuid}', [HostController::class, 'getHostCalender'])->name('icalendar');
 
+Route::get('/api-documentation', function () {
+    return view('api-docs');
+});

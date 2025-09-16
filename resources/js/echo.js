@@ -11,4 +11,10 @@ window.Echo = new Echo({
     wssPort: import.meta.env.VITE_REVERB_PORT ?? 443,
     forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
     enabledTransports: ['ws', 'wss'],
+    auth: {
+        headers: {
+            Authorization: "Bearer 14|dP95f4XRoDDP1ENvN8fLIMSo1CLgi7QdVZPSXZ1z915195c1",
+            Accept: 'application/json',
+        }
+    }
 });

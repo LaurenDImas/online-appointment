@@ -1,0 +1,886 @@
+openapi: 3.0.0
+info:
+  title: Online Appointment
+  version: 1.0.0
+  description: ''
+servers:
+  - url: '{{base_url}}'
+paths:
+  /api/v1/register:
+    parameters: []
+    post:
+      summary: Register
+      tags: &ref_0
+        - Authentication
+      parameters:
+        - name: Content-Type
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      responses:
+        '400':
+          headers:
+            Host:
+              schema:
+                type: integer
+              example: 127.0.0.1:8000
+            Connection:
+              schema:
+                type: string
+              example: close
+            X-Powered-By:
+              schema:
+                type: string
+              example: PHP/8.3.14
+            Cache-Control:
+              schema:
+                type: string
+              example: no-cache, private
+            Date:
+              schema:
+                type: string
+              example: Mon, 15 Sep 2025 09:45:32 GMT
+            Content-Type:
+              schema:
+                type: string
+              example: application/json
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+              example: '*'
+          description: Register
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  meta:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                      status:
+                        type: string
+                      messages:
+                        nullable: true
+                      validations:
+                        type: object
+                        properties:
+                          email:
+                            type: array
+                            items:
+                              type: string
+                          username:
+                            type: array
+                            items:
+                              type: string
+                      response_date:
+                        type: string
+                        format: style
+                  data:
+                    nullable: true
+              example:
+                meta:
+                  code: 400
+                  status: error
+                  messages: null
+                  validations:
+                    email:
+                      - The email has already been taken.
+                    username:
+                      - The username has already been taken.
+                  response_date: '2025-09-15 09:45:32'
+                data: null
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                password_confirmation:
+                  type: string
+                username:
+                  type: string
+                service_type:
+                  type: string
+                meet_location:
+                  type: string
+                meet_timezone:
+                  type: integer
+            example:
+              name: Dimas Yogi
+              email: dimas.yogi.999@gmail.com
+              password: password
+              password_confirmation: password
+              username: dimas.yogi.999
+              service_type: 297681d6-8f86-11f0-9dc5-d372c47f2f6d
+              meet_location: Gedung MidPlaza lt.10
+              meet_timezone: 7
+  /api/v1/resend-otp:
+    parameters: []
+    post:
+      summary: Resend OTP
+      tags: *ref_0
+      parameters:
+        - name: Content-Type
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      responses:
+        '200':
+          headers:
+            Host:
+              schema:
+                type: integer
+              example: 127.0.0.1:8000
+            Connection:
+              schema:
+                type: string
+              example: close
+            X-Powered-By:
+              schema:
+                type: string
+              example: PHP/8.3.14
+            Cache-Control:
+              schema:
+                type: string
+              example: no-cache, private
+            Date:
+              schema:
+                type: string
+              example: Mon, 15 Sep 2025 08:37:42 GMT
+            Content-Type:
+              schema:
+                type: string
+              example: application/json
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+              example: '*'
+          description: Resend OTP
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+            example:
+              email: dimas.yogi.777@gmail.com
+  /api/v1/check-otp-register:
+    parameters: []
+    post:
+      summary: Check OTP
+      tags: *ref_0
+      parameters:
+        - name: Content-Type
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      responses:
+        '200':
+          headers:
+            Host:
+              schema:
+                type: integer
+              example: 127.0.0.1:8000
+            Connection:
+              schema:
+                type: string
+              example: close
+            X-Powered-By:
+              schema:
+                type: string
+              example: PHP/8.3.14
+            Cache-Control:
+              schema:
+                type: string
+              example: no-cache, private
+            Date:
+              schema:
+                type: string
+              example: Mon, 15 Sep 2025 08:38:20 GMT
+            Content-Type:
+              schema:
+                type: string
+              example: application/json
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+              example: '*'
+          description: Check OTP
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                otp:
+                  type: string
+                  format: color
+            example:
+              email: dimas.yogi.888@gmail.com
+              otp: '645602'
+  /api/v1/verify-register:
+    parameters: []
+    post:
+      summary: Verify Register
+      tags: *ref_0
+      parameters:
+        - name: Content-Type
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      responses:
+        '200':
+          headers:
+            Host:
+              schema:
+                type: integer
+              example: 127.0.0.1:8000
+            Connection:
+              schema:
+                type: string
+              example: close
+            X-Powered-By:
+              schema:
+                type: string
+              example: PHP/8.3.14
+            Cache-Control:
+              schema:
+                type: string
+              example: no-cache, private
+            Date:
+              schema:
+                type: string
+              example: Mon, 15 Sep 2025 08:38:36 GMT
+            Content-Type:
+              schema:
+                type: string
+              example: application/json
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+              example: '*'
+          description: Verify Register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                otp:
+                  type: string
+                  format: color
+            example:
+              email: dimas.yogi.777@gmail.com
+              otp: '919328'
+  /api/v1/login:
+    parameters: []
+    post:
+      summary: Login
+      tags: *ref_0
+      parameters:
+        - name: Content-Type
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      responses:
+        '200':
+          headers:
+            Host:
+              schema:
+                type: integer
+              example: 127.0.0.1:8000
+            Connection:
+              schema:
+                type: string
+              example: close
+            X-Powered-By:
+              schema:
+                type: string
+              example: PHP/8.3.14
+            Cache-Control:
+              schema:
+                type: string
+              example: no-cache, private
+            Date:
+              schema:
+                type: string
+              example: Mon, 15 Sep 2025 08:39:22 GMT
+            Content-Type:
+              schema:
+                type: string
+              example: application/json
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+              example: '*'
+          description: Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+            example:
+              email: dimas.yogi.888@gmail.com
+              password: password
+  /api/v1/logout:
+    parameters: []
+    post:
+      summary: Logout
+      tags: *ref_0
+      parameters:
+        - name: Accept
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      responses: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+            example: {}
+  /api/v1/forgot-password/request:
+    parameters: []
+    post:
+      summary: Forgot Password
+      tags: &ref_1
+        - Forgot Password
+      parameters:
+        - name: Content-Type
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      responses: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+            example:
+              email: dimas.yogi.777@gmail.com
+  /api/v1/forgot-password/resend-otp:
+    parameters: []
+    post:
+      summary: Resend Forgot Password OTP
+      tags: *ref_1
+      parameters:
+        - name: Content-Type
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      responses: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+            example:
+              email: dimas.yogi.777@gmail.com
+  /api/v1/forgot-password/check-otp:
+    parameters: []
+    post:
+      summary: Verify OTP
+      tags: *ref_1
+      parameters:
+        - name: Content-Type
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      responses: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                otp:
+                  type: string
+                  format: color
+            example:
+              email: dimas.yogi.777@gmail.com
+              otp: '931703'
+  /api/v1/forgot-password/reset-password:
+    parameters: []
+    post:
+      summary: Reset Password
+      tags: *ref_1
+      parameters:
+        - name: Content-Type
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      responses: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                otp:
+                  type: string
+                  format: color
+                password:
+                  type: string
+                  format: color
+                password_confirmation:
+                  type: string
+                  format: color
+            example:
+              email: dimas.yogi.777@gmail.com
+              otp: '931703'
+              password: '123456'
+              password_confirmation: '123456'
+  /api/v1/availabilities:
+    parameters: []
+    get:
+      summary: Get Availabilities
+      tags: &ref_2
+        - Availabilities Management
+      parameters:
+        - name: Content-Type
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      responses: {}
+    post:
+      summary: Update Availabilities
+      tags: *ref_2
+      parameters:
+        - name: Content-Type
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      responses: {}
+  /api/v1/leaves:
+    parameters: []
+    post:
+      summary: Update Leaves
+      tags:
+        - Leaves
+      parameters:
+        - name: Content-Type
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      responses: {}
+  /api/v1/appointments/{uuid}:
+    parameters:
+      - name: uuid
+        in: path
+        required: true
+        example: 2ee51a29-9133-11f0-be7f-040e3cc6b235
+        schema:
+          type: integer
+    get:
+      summary: Show Appointments
+      tags: &ref_3
+        - Appointments
+      parameters:
+        - name: Content-Type
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      responses: {}
+  /api/v1/appointments/{uuid}/{status}:
+    parameters:
+      - name: uuid
+        in: path
+        required: true
+        example: 2ee51a29-9133-11f0-be7f-040e3cc6b235
+        schema:
+          type: integer
+      - name: status
+        in: path
+        required: true
+        example: approved
+        schema:
+          type: string
+    post:
+      summary: Upprove Or Reject
+      tags: *ref_3
+      parameters:
+        - name: Content-Type
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      responses: {}
+  /api/v1/prequestions:
+    parameters: []
+    post:
+      summary: Create & Update Pre Question
+      tags:
+        - PreQuestion
+      parameters:
+        - name: Content-Type
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      responses: {}
+  /api/v1/summary:
+    parameters: []
+    get:
+      summary: Get Summary
+      tags: &ref_4
+        - Profile
+      parameters: []
+      responses: {}
+  /api/v1/profile:
+    parameters: []
+    get:
+      summary: Get Profile
+      tags: *ref_4
+      parameters: []
+      responses: {}
+    post:
+      summary: Update Profile
+      tags: *ref_4
+      parameters: []
+      responses: {}
+  /api/v1/public/service-type:
+    parameters: []
+    get:
+      summary: Get Service Type
+      tags: &ref_5
+        - Explore
+      parameters:
+        - name: Accept
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      responses: {}
+  /api/v1/public/explore:
+    parameters: []
+    get:
+      summary: Explore Host
+      tags: *ref_5
+      parameters:
+        - name: service_type
+          in: query
+          required: false
+          example: 297681d6-8f86-11f0-9dc5-d372c47f2f6d
+          schema:
+            type: integer
+        - name: name
+          in: query
+          required: false
+          example: Dimas Yogi
+          schema:
+            type: string
+        - name: location
+          in: query
+          required: false
+          example: Gedung MidPlaza
+          schema:
+            type: string
+        - name: Accept
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      responses:
+        '200':
+          headers:
+            Host:
+              schema:
+                type: integer
+              example: 127.0.0.1:8000
+            Connection:
+              schema:
+                type: string
+              example: close
+            X-Powered-By:
+              schema:
+                type: string
+              example: PHP/8.3.14
+            Cache-Control:
+              schema:
+                type: string
+              example: no-cache, private
+            Date:
+              schema:
+                type: string
+              example: Mon, 15 Sep 2025 03:43:26 GMT
+            Content-Type:
+              schema:
+                type: string
+              example: application/json
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+              example: '*'
+          description: New Request
+  /api/v1/public/explore/333f7b6e-8f86-11f0-9dc5-d372c47f2f6d:
+    parameters: []
+    get:
+      summary: Detail Host
+      tags: *ref_5
+      parameters:
+        - name: Accept
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      responses: {}
+  /api/v1/public/appointment/a1b0d2ca-91ff-11f0-9449-0ac4b84d5ad9:
+    parameters: []
+    get:
+      summary: Detail Appointment
+      tags: *ref_5
+      parameters:
+        - name: Accept
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      responses: {}
+  /api/v1/public/explore/333f7b6e-8f86-11f0-9dc5-d372c47f2f6d/book:
+    parameters: []
+    post:
+      summary: Book an Appointment
+      tags: *ref_5
+      parameters:
+        - name: Accept
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      responses:
+        '200':
+          headers:
+            Host:
+              schema:
+                type: integer
+              example: 127.0.0.1:8000
+            Connection:
+              schema:
+                type: string
+              example: close
+            X-Powered-By:
+              schema:
+                type: string
+              example: PHP/8.3.14
+            Cache-Control:
+              schema:
+                type: string
+              example: no-cache, private
+            Date:
+              schema:
+                type: string
+              example: Mon, 15 Sep 2025 08:45:58 GMT
+            Content-Type:
+              schema:
+                type: string
+              example: application/json
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+              example: '*'
+          description: Success Book an Appointment
+        '400':
+          headers:
+            Host:
+              schema:
+                type: integer
+              example: 127.0.0.1:8000
+            Connection:
+              schema:
+                type: string
+              example: close
+            X-Powered-By:
+              schema:
+                type: string
+              example: PHP/8.3.14
+            Cache-Control:
+              schema:
+                type: string
+              example: no-cache, private
+            Date:
+              schema:
+                type: string
+              example: Mon, 15 Sep 2025 08:46:16 GMT
+            Content-Type:
+              schema:
+                type: string
+              example: application/json
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+              example: '*'
+          description: Error Validation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                phone_number:
+                  type: string
+                  format: utc-millisec
+                date:
+                  type: string
+                  format: date
+                time_start:
+                  type: string
+                  format: style
+                time_end:
+                  type: string
+                note:
+                  type: string
+                answers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      uuid:
+                        type: string
+                      answer:
+                        type: string
+            example:
+              name: Lauren Dimas
+              email: lauren@gmail.com
+              phone_number: '081234567890'
+              date: '2025-09-18'
+              time_start: '14:00'
+              time_end: '15:30'
+              note: Diskusi project baru
+              answers:
+                - uuid: 8ae82b0e-91e8-11f0-9449-0ac4b84d5ad9
+                  answer: pernah
+  /api/v1/public/appointment/f12fb304-9207-11f0-9449-0ac4b84d5ad9/cancel:
+    parameters: []
+    post:
+      summary: Cancel an Appointment
+      tags: *ref_5
+      parameters:
+        - name: Accept
+          in: header
+          required: false
+          example: application/json
+          schema:
+            type: string
+      responses: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                phone_number:
+                  type: string
+                  format: utc-millisec
+                date:
+                  type: string
+                  format: date
+                time_start:
+                  type: string
+                  format: style
+                time_end:
+                  type: string
+                note:
+                  type: string
+                answers:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      uuid:
+                        type: string
+                      answer:
+                        type: string
+            example:
+              name: Lauren Dimas
+              email: lauren@gmail.com
+              phone_number: '081234567890'
+              date: '2025-09-18'
+              time_start: '14:00'
+              time_end: '15:30'
+              note: Diskusi project baru
+              answers:
+                - uuid: 8ae82b0e-91e8-11f0-9449-0ac4b84d5ad9
+                  answer: pernah

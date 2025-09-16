@@ -3,11 +3,11 @@
 namespace App\Models\Appointment;
 
 use App\Enums\AppointmentStatus;
+use App\Events\NewAppointment;
 use App\Models\User;
 use Database\Factories\AppointmentFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Appointment extends Model
 {
@@ -33,6 +33,15 @@ class Appointment extends Model
     protected static function newFactory(): AppointmentFactory
     {
         return AppointmentFactory::new();
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($appointment) {
+            event(new NewAppointment($appointment));
+        });
     }
 
     public function host() {

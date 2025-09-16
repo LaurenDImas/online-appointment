@@ -15,13 +15,11 @@ use Illuminate\Queue\SerializesModels;
 use Spatie\IcalendarGenerator\Components\Calendar;
 use Spatie\IcalendarGenerator\Components\Event;
 
-class AppointmentStatusUpdate extends Mailable
+class NewAppointmentToUser extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $appointment;
-
-
+    public Appointment $appointment;
     /**
      * Create a new message instance.
      */
@@ -36,7 +34,7 @@ class AppointmentStatusUpdate extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Appointment Status: '. ($this->appointment->status == AppointmentStatus::Upcoming ? 'Approved' : 'Rejected'),
+            subject: 'New Appointment',
         );
     }
 
@@ -46,7 +44,7 @@ class AppointmentStatusUpdate extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mails.appointment-status-update',
+            view: 'mails.new-appointment-to-user',
         );
     }
 
@@ -61,16 +59,15 @@ class AppointmentStatusUpdate extends Mailable
             $calendar = Calendar::create('Appointment bersama '. $this->appointment->host->name);
             $calendar->event(Event::create()
                 ->name("Appointment bersama ". $this->appointment->host->name)
-                ->startsAt(Carbon::parse($this->appointment->date .' '. $this->appointment->start_time))
-                ->endsAt(Carbon::parse($this->appointment->date .' '. $this->appointment->end_time))
+                ->startsAt(Carbon::parse($this->appointment->date .' '. $this->appointment->time_start))
+                ->endsAt(Carbon::parse($this->appointment->date .' '. $this->appointment->time_end))
             )->withoutTimezone();
             return [
-                Attachment::fromData(function ($data) use ($calendar) {
+                Attachment::fromData(function () use ($calendar) {
                     return $calendar->get();
                 }, 'appointment.ics')->withMime('text/calendar')
             ];
         }
-
         return [];
     }
 }

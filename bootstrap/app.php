@@ -12,6 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         channels: __DIR__.'/../routes/channels.php',
         health: '/up',
     )
+    ->withBroadcasting(
+        __DIR__.'./../routes/channels.php',
+        ['middleware' => ['auth.sanctum.custom']]
+    )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'auth.sanctum.custom' => \App\Http\Middleware\SanctumGuard::class,
