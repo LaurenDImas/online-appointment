@@ -10,7 +10,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class SendRegisterOtp extends Mailable
+class SendRegisterOtp extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 

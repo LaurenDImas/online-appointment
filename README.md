@@ -63,5 +63,13 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 php artisan install:broadcasting --reverb
 composer run dev
 php artisan reverb:start
+composer require laravel/horizon
+php artisan horizon:install
+
+composer require livewire/livewire
+php artisan livewire:publish --config
+php artisan livewire:layout
+php artisan make:livewire counter
+php artisan livewire:form PostForm
 
 https://github.com/OpenAPITools/openapi-generator

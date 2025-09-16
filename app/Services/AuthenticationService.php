@@ -2,9 +2,12 @@
 namespace App\Services;
 
 use App\Helpers\ResponseFormatter;
+use App\Jobs\GenerateWhatsAppImage;
+use App\Jobs\SendWhatsAppNotification;
 use App\Models\Otp;
 use App\Models\ServiceType;
 use App\Models\User;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
@@ -45,7 +48,21 @@ class AuthenticationService{
             'is_active' => true,
         ]);
 
-        Mail::to($user->email)->send(new \App\Mail\SendRegisterOTP($user, $otp));
+//        Mail::to($user->email)->queue(new \App\Mail\SendRegisterOTP($user, $otp));
+//        Bus::chain([
+//            new GenerateWhatsAppImage($user),
+//            new SendWhatsAppNotification($user),
+//        ])->dispatch();
+
+//            Bus::batch([
+//                new GenerateWhatsAppImage($user),
+//                new SendWhatsAppNotification($user),
+//            ])
+//                ->then(function (){})
+//                ->catch(function (){})
+//                ->finally(function () {})
+//                ->dispatch();
+        dispatch(new \App\Jobs\SendWhatsAppNotification($user));
     }
 
     public function resendOtp(User $user): void
