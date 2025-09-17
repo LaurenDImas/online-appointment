@@ -4,12 +4,15 @@ namespace App\Services;
 
 use App\Models\ServiceType;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 
 class ExploreService
 {
-    public function getServiceType(): \Illuminate\Database\Eloquent\Collection
+    public function getServiceType(): Collection
     {
-        return ServiceType::all();
+        return cache()->remember('service_types', 3600, function () {
+            return ServiceType::all();
+        });
     }
 
     public function exploreHost(array $payload){

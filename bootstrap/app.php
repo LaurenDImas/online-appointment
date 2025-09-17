@@ -13,7 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withBroadcasting(
-        __DIR__.'./../routes/channels.php',
+        __DIR__.'/../routes/channels.php',
         ['middleware' => ['auth.sanctum.custom']]
     )
     ->withMiddleware(function (Middleware $middleware): void {

@@ -63,8 +63,30 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 php artisan install:broadcasting --reverb
 composer run dev
 php artisan reverb:start
+
 composer require laravel/horizon
 php artisan horizon:install
+
+composer require laravel/telescope
+php artisan telescope:install
+php artisan migrate
+
+composer require laravel/pulse
+php artisan vendor:publish --tag="pulse-migrations"
+php artisan migrate
+php artisan vendor:publish --tag=pulse-config
+php artisan vendor:publish --tag=pulse-dashboard
+
+composer require laravel/octane
+php artisan octane:install --server=frankenphp
+
+php artisan make:test MathTest --unit
+
+composer require pestphp/pest --dev
+composer require pestphp/pest-plugin-drift --dev
+./vendor/bin/pest --drift
+
+
 
 composer require livewire/livewire
 php artisan livewire:publish --config

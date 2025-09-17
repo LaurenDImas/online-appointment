@@ -48,7 +48,7 @@ class AuthenticationService{
             'is_active' => true,
         ]);
 
-//        Mail::to($user->email)->queue(new \App\Mail\SendRegisterOTP($user, $otp));
+        Mail::to($user->email)->queue(new \App\Mail\SendRegisterOTP($user, $otp));
 //        Bus::chain([
 //            new GenerateWhatsAppImage($user),
 //            new SendWhatsAppNotification($user),

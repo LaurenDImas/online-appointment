@@ -11,6 +11,9 @@
 |
 */
 
+use App\Models\ServiceType;
+use Database\Seeders\ServiceTypeSeeder;
+
 pest()->extend(Tests\TestCase::class)
  // ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
     ->in('Feature');
@@ -44,4 +47,16 @@ expect()->extend('toBeOne', function () {
 function something()
 {
     // ..
+}
+
+//beforeEach(function () {
+//    // Bersihkan state non-DB (rate limiter, cache dsb.)
+//    Cache::flush();
+//});
+
+
+function generateServiceType(): ?ServiceType
+{
+    test()->seed(ServiceTypeSeeder::class);
+    return ServiceType::first();
 }

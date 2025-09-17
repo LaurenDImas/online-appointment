@@ -8,4 +8,4 @@ use Illuminate\Support\Facades\Artisan;
 //})->purpose('Display an inspiring quote');
 
 
-\Illuminate\Support\Facades\Schedule::command('app:daily-reminder')->dailyAt('07:00');
+\Illuminate\Support\Facades\Schedule::command('app:daily-reminder')->everyMinute();
